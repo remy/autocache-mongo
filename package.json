@@ -1,0 +1,30 @@
+{
+  "name": "autocache-mongo",
+  "description": "MongoDB backed autocache module",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test tape test/*.test.js | tap-spec",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "keywords": [
+    "cache",
+    "redis"
+  ],
+  "author": "Remy Sharp",
+  "license": "MIT",
+  "dependencies": {
+    "mongodb": "^2.0.41"
+  },
+  "devDependencies": {
+    "async": "^1.4.2",
+    "autocache": "^1.0.0",
+    "debug": "^2.2.0",
+    "tap-spec": "^2.2.1",
+    "tape": "^3.5.0",
+    "semantic-release": "^4.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/remy/autocache-mongo.git"
+  }
+}
