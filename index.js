@@ -10,6 +10,7 @@ var port = 27017;
 var host = 'localhost';
 var database = 'autocache';
 var collection;
+var crypto = require('crypto');
 var noop = function () {};
 /**
  * Initialize MongoStore with the given `options`.
@@ -20,6 +21,10 @@ var noop = function () {};
 
 var cache = null;
 var connected = false;
+
+function getId(psid) {
+  return crypto.createHash('sha256').update(psid).digest('hex');
+}
 
 function MongoStore(options) {
   if (!(this instanceof MongoStore)) {
@@ -132,7 +137,9 @@ MongoStore.prototype.get = function (sid, fn) {
 
   debug('-> get');
 
-  collection.findOne({ _id: psid }, function (er, res) {
+  var _id = getId(psid);
+
+  collection.findOne({ _id: _id }, function (er, res) {
     debug('<- get');
     if (er) {
       return fn(er);
@@ -192,8 +199,10 @@ MongoStore.prototype.set = function (sid, value, fn) {
 
   debug('-> set');
 
+  var _id = getId(psid);
+
   collection.save({
-    _id: psid,
+    _id: _id,
     value: value,
   }, function (error) {
     debug('<- set');
@@ -213,9 +222,9 @@ MongoStore.prototype.set = function (sid, value, fn) {
  */
 
 MongoStore.prototype.destroy = function (sid, fn) {
-  sid = this.prefix + sid;
+  var _id = getId(this.prefix + sid);
   debug('-> clear one');
-  collection.remove({ _id: sid }, function (error, res) {
+  collection.remove({ _id: _id }, function (error, res) {
     var ret = null;
     if (res && res.result) {
       ret = res.result.n;
